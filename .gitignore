@@ -15,7 +15,6 @@ obj/
 *.userosscache
 *.sln.docstates
 *.txt
-*.png
 Settings.settings
 Settings.Designer.cs
 
