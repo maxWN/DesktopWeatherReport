@@ -37,6 +37,7 @@ namespace DesktopWeatherReport
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -93,8 +94,9 @@ namespace DesktopWeatherReport
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("HoloLens MDL2 Assets", 19.69811F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(680, 32);
+            this.label1.Location = new System.Drawing.Point(593, 33);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
             this.label1.Size = new System.Drawing.Size(77, 39);
@@ -105,6 +107,7 @@ namespace DesktopWeatherReport
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.SystemColors.Control;
             this.label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.label2.Font = new System.Drawing.Font("HoloLens MDL2 Assets", 12.22642F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label2.Location = new System.Drawing.Point(597, 357);
@@ -115,12 +118,25 @@ namespace DesktopWeatherReport
             this.label2.Text = "Search:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("HoloLens MDL2 Assets", 19.69811F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point);
+            this.label3.Location = new System.Drawing.Point(40, 33);
+            this.label3.Name = "label3";
+            this.label3.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            this.label3.Size = new System.Drawing.Size(222, 39);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Weather Conditions";
+            // 
             // DesktopWeatherReportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(926, 514);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
@@ -128,7 +144,11 @@ namespace DesktopWeatherReport
             this.Controls.Add(this.ErrorMessage);
             this.Controls.Add(this.WeatherTable);
             this.Controls.Add(this.SubmitBtn);
+            this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(942, 555);
+            this.MinimumSize = new System.Drawing.Size(942, 555);
             this.Name = "DesktopWeatherReportForm";
             this.Text = "Desktop Weather Report";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -146,6 +166,7 @@ namespace DesktopWeatherReport
         public System.Windows.Forms.Label label1;
         public System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.Label label3;
     }
 }
 
