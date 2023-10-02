@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace DesktopWeatherReport.Controllers
 {
@@ -15,7 +16,7 @@ namespace DesktopWeatherReport.Controllers
 
         public OpenWeatherMapController(IHttpClientFactory httpClientFactory)
         {
-            this.httpClientFactory = httpClientFactory;
+            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         #region Private Methods
@@ -25,9 +26,7 @@ namespace DesktopWeatherReport.Controllers
         /// </summary>
         private async Task<T> GetAsync<T>(string requestUrl) where T : class
         {
-            T retVal = null;
-
-            #region Actions
+            T weatherReport = null;
 
             try
             {
@@ -42,16 +41,16 @@ namespace DesktopWeatherReport.Controllers
                     throw new Exception(response.ToString());
                 }
 
-                retVal = await ParseContent<T>(content);
+                weatherReport = await ParseResponseContent<T>(content);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Log.Error(ex.Message);
+                throw;
             }
 
-            return retVal;
+            return weatherReport;
 
-            #endregion Actions
         }
 
         /// <summary>
@@ -60,20 +59,31 @@ namespace DesktopWeatherReport.Controllers
         /// <typeparam name="T"></typeparam>
         /// <param name="content"></param>
         /// <returns></returns>
-        private async Task<T> ParseContent<T>(HttpContent content) where T : class
+        private async Task<T> ParseResponseContent<T>(HttpContent content) where T : class
         {
-            dynamic retVal = null;
+            dynamic parsedContent = null;
 
-            string result = await content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(result) && !string.IsNullOrWhiteSpace(result))
+            try
             {
+
+                string result = await content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(result))
+                    throw new ArgumentNullException($"{base.ToString()}.{nameof(ParseResponseContent)} Error: response content cannot be null.");
+
                 JObject jobject = JObject.Parse(result);
                 JToken memberName = (JArray)jobject["weather"];
-                retVal = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result);
-                retVal.primary = memberName.ToObject<List<Weather>>().ToArray();
+                parsedContent = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result);
+                parsedContent.primary = memberName.ToObject<List<Weather>>().ToArray();
+
+            }
+            catch(Exception ex) 
+            {
+                Log.Error(ex.Message);
+                throw;
             }
 
-            return retVal;
+            return parsedContent;
         }
 
         /// <summary>
@@ -81,10 +91,13 @@ namespace DesktopWeatherReport.Controllers
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        private string BuildParameters(string arg)
+        private string BuildRequestUri(string arg)
         {
-            // TODO: Create service that first requires user to sign up to site
-            // then enter in their API key?
+            // TODO: Create controller that first requires user to sign 
+            // up to site then enter in their API key?
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.PARTIAL_URL) || string.IsNullOrWhiteSpace(Properties.Settings.Default.SECRET_KEY))
+                throw new ArgumentNullException($"{base.ToString()}.{nameof(BuildRequestUri)} Error: null or empty argument was given.");
+
             return $"{Properties.Settings.Default.PARTIAL_URL}q={arg}{Properties.Settings.Default.SECRET_KEY}";
         }
 
@@ -99,25 +112,28 @@ namespace DesktopWeatherReport.Controllers
         /// <returns></returns>
         public CurrentWeather GetCurrentWeather(string location)
         {
-            CurrentWeather retVal = null;
+            CurrentWeather currentWeather = null;
             string uriPath;
 
-            if (!string.IsNullOrEmpty(location) && !string.IsNullOrWhiteSpace(location))
+            if (string.IsNullOrWhiteSpace(location))
+                throw new ArgumentNullException($"{base.ToString()}.{nameof(GetCurrentWeather)} Error: null or empty location was given.");
+
+            try
             {
-                uriPath = BuildParameters(location);
+                uriPath = BuildRequestUri(location);
 
                 Task.Run(async () =>
                 {
-                    retVal = await GetAsync<CurrentWeather>(uriPath);
+                    currentWeather = await GetAsync<CurrentWeather>(uriPath);
                 })
                 .Wait();
             }
-            else
-            {
-                throw new ArgumentNullException("GetCurrentWeather() Error: Invalid argument was given.");
+            catch (Exception ex) {
+                Log.Error(ex.Message);
+                throw;
             }
 
-            return retVal;
+            return currentWeather;
         }
 
         #endregion Public Methods

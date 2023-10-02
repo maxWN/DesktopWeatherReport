@@ -16,8 +16,8 @@ namespace DesktopWeatherReport
         {
             InitializeComponent();
             SetDefaultAppView();
-            this.openWeatherMapController = openWeatherMapController;
-            this.imageConfigurationController = imageConfigurationController;
+            this.openWeatherMapController = openWeatherMapController ?? throw new ArgumentNullException(nameof(openWeatherMapController));
+            this.imageConfigurationController = imageConfigurationController ?? throw new ArgumentNullException(nameof(imageConfigurationController));
             pictureBox1.BackgroundImage = Properties.Resources.Todays_Weather;
         }
 
@@ -69,7 +69,6 @@ namespace DesktopWeatherReport
                 // if no data was found, or error occurred, populate list with dummy data
                 DefaultListViewPopulation();
             }
-
         }
 
         /// <summary>
