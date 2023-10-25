@@ -43,6 +43,7 @@ namespace DesktopWeatherReport
             finally
             {
                 Log.CloseAndFlush();
+                Environment.Exit(0);
             }
         }
 
