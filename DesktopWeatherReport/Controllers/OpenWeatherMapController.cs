@@ -10,7 +10,7 @@ using Serilog;
 
 namespace DesktopWeatherReport.Controllers
 {
-    public class OpenWeatherMapController : IOpenWeatherMapController
+    public sealed class OpenWeatherMapController : IOpenWeatherMapController
     {
         private readonly IHttpClientFactory httpClientFactory;
 
@@ -24,6 +24,9 @@ namespace DesktopWeatherReport.Controllers
         /// <summary>
         /// Gets the asynchronous response after making the call to the API.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="requestUrl"></param>
+        /// <returns></returns>
         private async Task<T> GetAsync<T>(string requestUrl) where T : class
         {
             T weatherReport = null;
@@ -62,7 +65,6 @@ namespace DesktopWeatherReport.Controllers
         private async Task<T> ParseResponseContent<T>(HttpContent content) where T : class
         {
             dynamic parsedContent = null;
-
             try
             {
 
@@ -110,7 +112,7 @@ namespace DesktopWeatherReport.Controllers
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public CurrentWeather GetCurrentWeather(string location)
+        public async Task<CurrentWeather> GetCurrentWeather(string location)
         {
             CurrentWeather currentWeather = null;
             string uriPath;
@@ -122,11 +124,7 @@ namespace DesktopWeatherReport.Controllers
             {
                 uriPath = BuildRequestUri(location);
 
-                Task.Run(async () =>
-                {
-                    currentWeather = await GetAsync<CurrentWeather>(uriPath);
-                })
-                .Wait();
+                currentWeather = await GetAsync<CurrentWeather>(uriPath);
             }
             catch (Exception ex) {
                 Log.Error(ex.Message);

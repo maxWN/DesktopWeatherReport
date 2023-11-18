@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Serilog;
 using System.Windows.Forms;
 
 namespace DesktopWeatherReport.Controllers
 {
-    public class ImageConfigurationController : IImageConfigurationController
+    public sealed class ImageConfigurationController : IImageConfigurationController
     {
 
         Form frm = null;
 
         public ImageConfigurationController() { }
 
-        #region public methods
+        #region Public Methods
 
         /// <summary>
-        /// Sets the weather image, given the provided description
+        /// Sets the weather image after matching the provided description
         /// </summary>
+        /// <param name="_frm"></param>
         /// <param name="weatherState"></param>
-        /// <returns></returns>
         public void SetWeatherImage(DesktopWeatherReportForm _frm, string weatherState)
         {
 
@@ -58,14 +54,14 @@ namespace DesktopWeatherReport.Controllers
                         _frm.pictureBox1.BackgroundImage = Properties.Resources.Status_weather_snow_icon;
                         break;
                     default:
-                        Console.WriteLine("Default case");
+                        Log.Error("Invalid parameter supplied!");
                         break;
                 }
 
             }
         }
 
-        #endregion public methods
+        #endregion Public Methods
 
     }
 }

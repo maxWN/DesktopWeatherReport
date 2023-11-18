@@ -1,9 +1,10 @@
 ﻿using DesktopWeatherReport.Models;
+using System.Threading.Tasks;
 
 namespace DesktopWeatherReport.Controllers
 {
     public interface IOpenWeatherMapController
     {
-        CurrentWeather GetCurrentWeather(string location);
+        Task<CurrentWeather> GetCurrentWeather(string location);
     }
 }

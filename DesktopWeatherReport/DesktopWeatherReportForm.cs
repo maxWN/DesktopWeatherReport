@@ -2,11 +2,12 @@
 using DesktopWeatherReport.Models;
 using Serilog;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DesktopWeatherReport
 {
-    public partial class DesktopWeatherReportForm : Form
+    public sealed partial class DesktopWeatherReportForm : Form
     {
         private readonly IOpenWeatherMapController openWeatherMapController;
         private readonly IImageConfigurationController imageConfigurationController;
@@ -15,9 +16,9 @@ namespace DesktopWeatherReport
         public DesktopWeatherReportForm(IOpenWeatherMapController openWeatherMapController, IImageConfigurationController imageConfigurationController)
         {
             InitializeComponent();
-            SetDefaultAppView();
             this.openWeatherMapController = openWeatherMapController ?? throw new ArgumentNullException(nameof(openWeatherMapController));
             this.imageConfigurationController = imageConfigurationController ?? throw new ArgumentNullException(nameof(imageConfigurationController));
+            SetDefaultAppView();
             pictureBox1.BackgroundImage = Properties.Resources.Todays_Weather;
         }
 
@@ -112,7 +113,12 @@ namespace DesktopWeatherReport
 
             try
             {
-                formData = openWeatherMapController.GetCurrentWeather(textBox1.Text);
+                Task.Run(async () =>
+                {
+                    formData = await openWeatherMapController.GetCurrentWeather(textBox1.Text);
+                })
+                .Wait();
+
                 if (formData != null)
                 {
                     ConfigureListView(formData);
